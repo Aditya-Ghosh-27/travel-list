@@ -7,11 +7,17 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item){
+    setItems(items => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems}/>
+      <PackingList items={items}/>
       <Stats />
     </div>
   );
@@ -24,9 +30,10 @@ function Logo() {
 // onChange function receieves the event (here the event is e) that was fired off
 // value ={description} means we always force the element to always take the value of the state variable
 
-function Form() {
+function Form({ onAddItems }) {
   const [description, setDescription] = useState(""); // 1st step : Create our peice of state
   const [quantity, setQuantity] = useState(1);  // 1st step : Create our peice of state
+
 
   // e is the event object with all the information about the current event
   function handleSubmit(e){
@@ -39,6 +46,8 @@ function Form() {
       description, quantity, packed : false , id : Date.now()
     }
     console.log(newItem);
+
+    onAddItems(newItem);
 
     // After a submission is done, we should go back to the original state
     setDescription("");
@@ -66,11 +75,11 @@ function Form() {
   </form>);
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map(item => (
+        {items.map(item => (
           <Item item={item} key={item.id}/>
         ))}
       </ul>
